@@ -118,7 +118,8 @@ def debug_index():
 	ss['debug']['index'] = d
 
 def ui_pdf_file():
-	st.write('### 2. carga tu fichero PDF. No cargues nada confidencial.')
+	st.write('### 2. carga tu fichero PDF ')
+	st.write('No cargues nada confidencial')
 	disabled = not ss.get('user') or (not ss.get('api_key') and not ss.get('community_pct',0))
 	t1,t2 = st.tabs(['UPLOAD','SELECT'])
 	with t1:
@@ -279,7 +280,7 @@ def b_save():
 	api_key = ss.get('api_key')
 	disabled = not api_key or not db or not index or not name
 	help = "The file will be stored for about 90 days. Available only when using your own API key."
-	if st.button('slarvar el inidice en ask-my-pdf', disabled=disabled, help=help):
+	if st.button('salrvar el inidice en ask-my-pdf', disabled=disabled, help=help):
 		with st.spinner('gurdando en ask-my-pdf'):
 			db.put(name, index)
 
