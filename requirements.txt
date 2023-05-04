@@ -1,6 +1,6 @@
 git+https://github.com/mobarski/ai-bricks.git
 streamlit
-streamlit_extras
+streamlit-extras
 scikit-learn
 numpy
 pycryptodome
