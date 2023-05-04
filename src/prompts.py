@@ -3,6 +3,14 @@
 # TODO: Ignore OCR problems in the text below.
 
 TASK = {
+    'v7': (
+			"Responde a la pregunta de manera sincera basándote en el texto a continuación."
+			"Incluye una cita textual y un comentario sobre dónde encontrarla en el texto (número de página)."
+			#"Después de la cita, escribe una explicación paso a paso en un nuevo párrafo."
+			"Después de la cita, escribe una explicación paso a paso."
+			"Utiliza viñetas."
+			#"Luego, intenta reformular la pregunta original para que pueda dar mejores resultado
+		),
 	'v6': (
 			"Answer the question truthfully based on the text below. "
 			"Include verbatim quote and a comment where to find it in the text (page number). "

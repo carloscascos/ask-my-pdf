@@ -17,15 +17,9 @@
         "type": "python",
         "request": "launch",
         "module": "streamlit",
-        "env": {
-            "STREAMLIT_APP": "app.py",
-            "STREAMLIT_ENV": "development",
-            "AWS_PROFILE": "mega_root",
-            "PYTHONPATH": "${workspaceRoot}/src",
-        },
-        "args": [
+               "args": [
             "run",
-            "/home/ccascos/proyectos/ai/ask-my-pdf/src/gui.py"
+            "${workspaceRoot}/src/gui.py"
         ],
         "jinja": true
     }, 

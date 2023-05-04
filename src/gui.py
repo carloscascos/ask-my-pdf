@@ -1,5 +1,6 @@
-__version__ = "cascos"
-app_name = "Ask my PDF"
+__version__ = "SBC"
+app_name = "Pregunta a mi PDF"
+from streamlit_extras.app_logo import add_logo
 
 
 # BOILERPLATE
@@ -13,6 +14,8 @@ st.write(f'<style>{css.v1}</style>', unsafe_allow_html=True)
 header1 = st.empty() # for errors / messages
 header2 = st.empty() # for errors / messages
 header3 = st.empty() # for errors / messages
+add_logo ('https://www.sbc-labs.com/proyectos/assets/img/SBCtrans200.png2',height=200)
+
 
 # IMPORTS
 
@@ -24,6 +27,8 @@ import cache
 import os
 
 from time import time as now
+from streamlit_extras.app_logo import add_logo
+
 
 
 
@@ -65,11 +70,11 @@ def ui_info():
 	# Ask my PDF
 	version {__version__}
 	
-	Question answering system built on top of GPT3.
+	Sistema d busque semantica basado en GPT3.
 	""")
 	ui_spacer(1)
-	st.write("Made by [Maciej Obarski](https://www.linkedin.com/in/mobarski/).", unsafe_allow_html=True)
-	st.markdown('Source code can be found [here](https://github.com/mobarski/ask-my-pdf).')
+	st.write("Hiecho por [Maciej Obarski](https://www.linkedin.com/in/mobarski/).", unsafe_allow_html=True)
+	st.markdown('Código fuente  [aquí](https://github.com/mobarski/ask-my-pdf).')
 
 def ui_api_key():
 	if ss['community_user']:
@@ -86,7 +91,7 @@ def ui_api_key():
 		with t2:
 			st.text_input('OpenAI API key', type='password', key='api_key', on_change=on_api_key_change, label_visibility="collapsed")
 	else:
-		st.write('### 1. Enter your OpenAI API key')
+		st.write('### 1. Intruduce tu OpenAI API key')
 		st.text_input('OpenAI API key', type='password', key='api_key', on_change=on_api_key_change, label_visibility="collapsed")
 
 def index_pdf_file():
@@ -113,7 +118,7 @@ def debug_index():
 	ss['debug']['index'] = d
 
 def ui_pdf_file():
-	st.write('### 2. Upload or select your PDF file')
+	st.write('### 2. carga tu fichero PDF. No cargues nada confidencial.')
 	disabled = not ss.get('user') or (not ss.get('api_key') and not ss.get('community_pct',0))
 	t1,t2 = st.tabs(['UPLOAD','SELECT'])
 	with t1:
@@ -181,7 +186,7 @@ def ui_hyde_prompt():
 	st.text_area('HyDE prompt', prompts.HYDE, key='hyde_prompt')
 
 def ui_question():
-	st.write('### 3. Ask questions'+(f' to {ss["filename"]}' if ss.get('filename') else ''))
+	st.write('### 3. Haz tus preguntas'+(f' to {ss["filename"]}' if ss.get('filename') else ''))
 	disabled = False
 	st.text_area('question', key='question', height=100, placeholder='Enter question here', help='', label_visibility="collapsed", disabled=disabled)
 
@@ -202,21 +207,21 @@ def ui_debug():
 
 def b_ask():
 	c1,c2,c3,c4,c5 = st.columns([2,1,1,2,2])
-	if c2.button('👍', use_container_width=True, disabled=not ss.get('output')):
-		ss['feedback'].send(+1, ss, details=ss['send_details'])
-		ss['feedback_score'] = ss['feedback'].get_score()
-	if c3.button('👎', use_container_width=True, disabled=not ss.get('output')):
-		ss['feedback'].send(-1, ss, details=ss['send_details'])
-		ss['feedback_score'] = ss['feedback'].get_score()
-	score = ss.get('feedback_score',0)
-	c5.write(f'feedback score: {score}')
-	c4.checkbox('send details', True, key='send_details',
-			help='allow question and the answer to be stored in the ask-my-pdf feedback database')
+	# if c2.button('👍', use_container_width=True, disabled=not ss.get('output')):
+	# 	ss['feedback'].send(+1, ss, details=ss['send_details'])
+	# 	ss['feedback_score'] = ss['feedback'].get_score()
+	# if c3.button('👎', use_container_width=True, disabled=not ss.get('output')):
+	# 	ss['feedback'].send(-1, ss, details=ss['send_details'])
+	# 	ss['feedback_score'] = ss['feedback'].get_score()
+	# score = ss.get('feedback_score',0)
+	# c5.write(f'feedback score: {score}')
+	# c4.checkbox('send details', True, key='send_details',
+	# 		help='allow question and the answer to be stored in the ask-my-pdf feedback database')
 	#c1,c2,c3 = st.columns([1,3,1])
 	#c2.radio('zzz',['👍',r'...',r'👎'],horizontal=True,label_visibility="collapsed")
 	#
 	disabled = (not ss.get('api_key') and not ss.get('community_pct',0)) or not ss.get('index')
-	if c1.button('get answer', disabled=disabled, type='primary', use_container_width=True):
+	if c1.button('obtener respuesta', disabled=disabled, type='primary', use_container_width=True):
 		question = ss.get('question','')
 		temperature = ss.get('temperature', 0.0)
 		hyde = ss.get('use_hyde')
@@ -229,7 +234,7 @@ def b_ask():
 		n_before = ss.get('n_frag_before',0)
 		n_after  = ss.get('n_frag_after',0)
 		index = ss.get('index',{})
-		with st.spinner('preparing answer'):
+		with st.spinner('preparando respuesta'):
 			resp = model.query(question, index,
 					task=task,
 					temperature=temperature,
@@ -274,15 +279,15 @@ def b_save():
 	api_key = ss.get('api_key')
 	disabled = not api_key or not db or not index or not name
 	help = "The file will be stored for about 90 days. Available only when using your own API key."
-	if st.button('save encrypted index in ask-my-pdf', disabled=disabled, help=help):
-		with st.spinner('saving to ask-my-pdf'):
+	if st.button('slarvar el inidice en ask-my-pdf', disabled=disabled, help=help):
+		with st.spinner('gurdando en ask-my-pdf'):
 			db.put(name, index)
 
 def b_delete():
 	db = ss.get('storage')
 	name = ss.get('selected_file')
 	# TODO: confirm delete
-	if st.button('delete from ask-my-pdf', disabled=not db or not name):
+	if st.button('elimina el documento de ask-my-pdf', disabled=not db or not name):
 		with st.spinner('deleting from ask-my-pdf'):
 			db.delete(name)
 		#st.experimental_rerun()
@@ -296,10 +301,12 @@ def output_add(q,a):
 
 # LAYOUT
 
+
+
 with st.sidebar:
 	ui_info()
 	ui_spacer(2)
-	with st.expander('advanced'):
+	with st.expander('Avanzado'):
 		ui_show_debug()
 		b_clear()
 		ui_model()
