@@ -280,7 +280,7 @@ def b_save():
 	api_key = ss.get('api_key')
 	disabled = not api_key or not db or not index or not name
 	help = "The file will be stored for about 90 days. Available only when using your own API key."
-	if st.button('salrvar el inidice en ask-my-pdf', disabled=disabled, help=help):
+	if st.button('salvar el inidice en ask-my-pdf', disabled=disabled, help=help):
 		with st.spinner('gurdando en ask-my-pdf'):
 			db.put(name, index)
 
