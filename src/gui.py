@@ -50,9 +50,9 @@ def on_api_key_change():
 	ss['debug']['storage.class'] = ss['storage'].__class__.__name__
 
 
-ss['community_user'] = os.getenv('COMMUNITY_USER')
-if 'user' not in ss and ss['community_user']:
-	on_api_key_change() # use community key
+# ss['community_user'] = os.getenv('COMMUNITY_USER')
+# if 'user' not in ss and ss['community_user']:
+# 	on_api_key_change() # use community key
 
 # COMPONENTS
 
@@ -70,28 +70,15 @@ def ui_info():
 	# Ask my PDF
 	version {__version__}
 	
-	Sistema d busque semantica basado en GPT3.
+	Sistema d busqueda semantica basado en GPT3.
 	""")
 	ui_spacer(1)
 	st.write("Hiecho por [Maciej Obarski](https://www.linkedin.com/in/mobarski/).", unsafe_allow_html=True)
 	st.markdown('Código fuente  [aquí](https://github.com/mobarski/ask-my-pdf).')
 
 def ui_api_key():
-	if ss['community_user']:
-		st.write('### 1. Optional - enter your OpenAI API key')
-		t1,t2 = st.tabs(['community version','enter your own API key'])
-		with t1:
-			pct = model.community_tokens_available_pct()
-			st.write(f'Community tokens available: :{"green" if pct else "red"}[{int(pct)}%]')
-			st.progress(pct/100)
-			st.write('Refresh in: ' + model.community_tokens_refresh_in())
-			st.write('You can sign up to OpenAI and/or create your API key [here](https://platform.openai.com/account/api-keys)')
-			ss['community_pct'] = pct
-			ss['debug']['community_pct'] = pct
-		with t2:
-			st.text_input('OpenAI API key', type='password', key='api_key', on_change=on_api_key_change, label_visibility="collapsed")
-	else:
-		st.write('### 1. Intruduce tu OpenAI API key')
+	with st.expander(' Introduce tu OpenAI API key'):
+		st.write('#### 1 Intruduce tu OpenAI API key')
 		st.text_input('OpenAI API key', type='password', key='api_key', on_change=on_api_key_change, label_visibility="collapsed")
 
 def index_pdf_file():
@@ -118,34 +105,38 @@ def debug_index():
 	ss['debug']['index'] = d
 
 def ui_pdf_file():
-	st.write('### 2. carga tu fichero PDF ')
-	st.write('No cargues nada confidencial')
-	disabled = not ss.get('user') or (not ss.get('api_key') and not ss.get('community_pct',0))
-	t1,t2 = st.tabs(['UPLOAD','SELECT'])
-	with t1:
-		st.file_uploader('pdf file', type='pdf', key='pdf_file', disabled=disabled, on_change=index_pdf_file, label_visibility="collapsed")
-		b_save()
-	with t2:
-		filenames = ['']
-		if ss.get('storage'):
-			filenames += ss['storage'].list()
-		def on_change():
-			name = ss['selected_file']
-			if name and ss.get('storage'):
-				with ss['spin_select_file']:
-					with st.spinner('loading index'):
-						t0 = now()
-						index = ss['storage'].get(name)
-						ss['debug']['storage_get_time'] = now()-t0
-				ss['filename'] = name # XXX
-				ss['index'] = index
-				debug_index()
-			else:
-				#ss['index'] = {}
-				pass
-		st.selectbox('select file', filenames, on_change=on_change, key='selected_file', label_visibility="collapsed", disabled=disabled)
-		b_delete()
-		ss['spin_select_file'] = st.empty()
+	
+	with st.expander('Carga tu fichero PDF'):
+
+	
+		st.write('### 2 carga tu fichero PDF ')
+		st.write('No cargues nada confidencial')
+		disabled = not ss.get('user') or (not ss.get('api_key') and not ss.get('community_pct',0))
+		t1,t2 = st.tabs(['UPLOAD','SELECT'])
+		with t1:
+			st.file_uploader('pdf file', type='pdf', key='pdf_file', disabled=disabled, on_change=index_pdf_file, label_visibility="collapsed")
+			b_save()
+		with t2:
+			filenames = ['']
+			if ss.get('storage'):
+				filenames += ss['storage'].list()
+			def on_change():
+				name = ss['selected_file']
+				if name and ss.get('storage'):
+					with ss['spin_select_file']:
+						with st.spinner('loading index'):
+							t0 = now()
+							index = ss['storage'].get(name)
+							ss['debug']['storage_get_time'] = now()-t0
+					ss['filename'] = name # XXX
+					ss['index'] = index
+					debug_index()
+				else:
+					#ss['index'] = {}
+					pass
+			st.selectbox('select file', filenames, on_change=on_change, key='selected_file', label_visibility="collapsed", disabled=disabled)
+			b_delete()
+			ss['spin_select_file'] = st.empty()
 
 def ui_show_debug():
 	st.checkbox('show debug section', key='show_debug')
@@ -187,7 +178,7 @@ def ui_hyde_prompt():
 	st.text_area('HyDE prompt', prompts.HYDE, key='hyde_prompt')
 
 def ui_question():
-	st.write('### 3. Haz tus preguntas'+(f' to {ss["filename"]}' if ss.get('filename') else ''))
+	st.write('### '+(f'  {ss["filename"]}' if ss.get('filename') else ''))
 	disabled = False
 	st.text_area('question', key='question', height=100, placeholder='Enter question here', help='', label_visibility="collapsed", disabled=disabled)
 
